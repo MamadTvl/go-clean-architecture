@@ -4,10 +4,10 @@ import (
 	"clean-architecture/infrastructure/config"
 	"clean-architecture/infrastructure/logger"
 	"context"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/fx"
+	"net/http"
 )
 
 type Router struct {
@@ -25,6 +25,8 @@ func NewRouter(
 	httpRouter := gin.Default()
 
 	gin.DefaultWriter = logger.GetGinLogger()
+
+	httpRouter.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	httpRouter.GET("/health-check", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "clean architecture 📺 API Up and Running"})

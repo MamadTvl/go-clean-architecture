@@ -5,13 +5,14 @@ import (
 	user_controller "clean-architecture/infrastructure/controller/user"
 	"clean-architecture/infrastructure/http"
 	"clean-architecture/infrastructure/logger"
-
+	metrics "clean-architecture/infrastructure/service/prometheus"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 )
 
 var AppModule = fx.Module("AppModule",
 	config.ConfigModule,
+	metrics.PrometheusMetricsModule,
 	logger.LoggerModule,
 	http.HttpModule,
 	user_controller.UserControllerModule,

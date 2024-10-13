@@ -2,13 +2,20 @@ package bcrypt
 
 import bcryptlib "golang.org/x/crypto/bcrypt"
 
-type Bcrypt struct{}
-
-func NewBcrypt() *Bcrypt {
-	return &Bcrypt{}
+type Adapter interface {
+	GenerateHash(password string) (string, error)
+	Compare(hashedPassword string, password string) bool
 }
 
-func (b *Bcrypt) GenerateHash(password string) (string, error) {
+type bcrypt struct{}
+
+func NewBcrypt() Adapter {
+	var adapter Adapter
+	adapter = &bcrypt{}
+	return adapter
+}
+
+func (b *bcrypt) GenerateHash(password string) (string, error) {
 	bytes, err := bcryptlib.GenerateFromPassword([]byte(password), 4)
 	if err == nil {
 		return string(bytes), nil
@@ -16,7 +23,7 @@ func (b *Bcrypt) GenerateHash(password string) (string, error) {
 	return "", err
 }
 
-func (b *Bcrypt) Compare(hashedPassword string, password string) bool {
+func (b *bcrypt) Compare(hashedPassword string, password string) bool {
 	err := bcryptlib.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
 }

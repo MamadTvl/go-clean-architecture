@@ -5,15 +5,21 @@ import (
 	"clean-architecture/infrastructure/db"
 )
 
-type UserRepository struct {
+type UserRepository interface {
+	Create(username string, hashedPassword string) (*model.User, error)
+}
+
+type repository struct {
 	*db.Database
 }
 
-func NewUserRepository(db *db.Database) *UserRepository {
-	return &UserRepository{db}
+func NewUserRepository(db *db.Database) UserRepository {
+	var userRepository UserRepository
+	userRepository = &repository{db}
+	return userRepository
 }
 
-func (r *UserRepository) Create(username string, hashedPassword string) (*model.User, error) {
+func (r *repository) Create(username string, hashedPassword string) (*model.User, error) {
 	user := &model.User{
 		UserName: username,
 		Password: hashedPassword,

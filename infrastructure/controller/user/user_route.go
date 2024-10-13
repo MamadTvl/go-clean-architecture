@@ -18,7 +18,7 @@ func NewRoute(
 
 }
 
-// Setup user routes
+// RegisterRoute Setup user routes
 func RegisterRoute(r *Route) {
 	api := r.handler.Group("/api")
 	api.POST("/user", r.controller.CreateUser)
