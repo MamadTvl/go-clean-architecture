@@ -32,7 +32,12 @@ func NewRouter(
 		c.JSON(http.StatusOK, gin.H{"data": "clean architecture 📺 API Up and Running"})
 	})
 	lc.Append(fx.Hook{OnStart: func(ctx context.Context) error {
-		go httpRouter.Run(":8000")
+		go func() {
+			err := httpRouter.Run(":8000")
+			if err != nil {
+				logger.Error(err)
+			}
+		}()
 		return nil
 	}})
 
